@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AnalysisMode>Recommended</AnalysisMode>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <!-- Remove this to get a warning how to enable IDE0005 (Remove unnecessary usings/imports) on build; that warning describes a workaround for https://github.com/dotnet/roslyn/issues/41640 -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <CopyDocumentationFileToOutputDirectory>false</CopyDocumentationFileToOutputDirectory>
+    <NoWarn>$(NoWarn),1573,1591,1712</NoWarn>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Configurations>Production;Develop;QA;Staging;Debug</Configurations>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Cortside.Common.DomainEvent" Version="1.0.195" />
+    <PackageReference Include="Cortside.Common.Messages" Version="6.2.408" />
+    <PackageReference Include="Cortside.Health" Version="6.0.86" />
+    <PackageReference Include="Microsoft.Azure.ServiceBus" Version="5.2.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.10.48">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="PolicyServer.Runtime.Client.AspNetCore" Version="4.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Cortside.AmqpTools.Configuration\Cortside.AmqpTools.Configuration.csproj" />
+    <ProjectReference Include="..\Cortside.AmqpTools.Dto\Cortside.AmqpTools.Dto.csproj" />
+    <ProjectReference Include="..\Cortside.AmqpTools.Exceptions\Cortside.AmqpTools.Exceptions.csproj" />
+  </ItemGroup>
+</Project>
