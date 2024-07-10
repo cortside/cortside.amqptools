@@ -1,7 +1,10 @@
+using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Cortside.AmqpTools.WebApi.IntegrationTests.Helpers.Auth;
+using Cortside.AmqpTools.WebApi.Models.Requests;
 using Cortside.AmqpTools.WebApi.Models.Responses;
 using Cortside.AspNetCore.Common.Models;
 using FluentAssertions;
@@ -20,7 +23,7 @@ namespace Cortside.AmqpTools.WebApi.IntegrationTests.Tests {
         }
 
         [Fact]
-        public async Task ShouldGetMessageCountsAsync() {
+        public async Task ShouldGetQueueDetailsAsync() {
             //get Token
             testServerClient.DefaultRequestHeaders.Authorization = new Authentication().GetBearerToken();
 
@@ -56,6 +59,39 @@ namespace Cortside.AmqpTools.WebApi.IntegrationTests.Tests {
                 r.MessageId.Should().NotBeNull();
                 r.CorrelationId.Should().NotBeNull();
             }
+        }
+
+        [Fact]
+        public async Task ShouldShovelMessagesAsync() {
+            //get Token
+            testServerClient.DefaultRequestHeaders.Authorization = new Authentication().GetBearerToken();
+
+            var body = new ShovelRequest {
+                MaxCount = 5
+            };
+
+            //act
+            var response = await testServerClient.PostAsJsonAsync("api/v1/queues/someQueue/shovel", body);
+
+            //assert
+            response.StatusCode.Should().Be(HttpStatusCode.Accepted);
+        }
+
+        [Fact]
+        public async Task ShouldDeleteMessageAsync() {
+            //get Token
+            testServerClient.DefaultRequestHeaders.Authorization = new Authentication().GetBearerToken();
+
+            var request = new DeleteMessageRequest {
+                MessageId = Guid.NewGuid().ToString(),
+                MessageType = Dto.Enumerations.MessageType.DeadLetter
+            };
+
+            //act
+            var response = await testServerClient.DeleteAsync($"api/v1/queues/someQueue/message?messageId={request.MessageId}&messageType={request.MessageType}");
+
+            //assert
+            response.StatusCode.Should().Be(HttpStatusCode.Accepted);
         }
     }
 }

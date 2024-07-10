@@ -72,7 +72,7 @@ namespace Cortside.AmqpTools.WebApi.IntegrationTests.Helpers.IDSMock {
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(200)
-                    .WithBody(r => $"{{\"roles\":[\"Admin\"],\"permissions\":[\"GetQueues\",\"ShovelQueues\"]}}")
+                    .WithBody(r => $"{{\"roles\":[\"Admin\"],\"permissions\":[\"GetQueues\",\"ShovelQueues\",\"DeleteMessage\"]}}")
             );
 
             MockServer

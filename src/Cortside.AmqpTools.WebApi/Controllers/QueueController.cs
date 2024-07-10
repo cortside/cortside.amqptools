@@ -84,13 +84,13 @@ namespace Cortside.AmqpTools.WebApi.Controllers {
         /// Delete a message from queue by type (active, deadletter)
         /// </summary>
         /// <param name="queue"></param>
-        /// <param name="requestBody"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
         [HttpDelete("{queue}/message")]
         [Authorize(Constants.Authorization.Permissions.DeleteMessage)]
         [ProducesResponseType(202)]
-        public async Task<IActionResult> DeleteMessageFromQueueAsync(string queue, [FromBody] DeleteMessageRequest requestBody) {
-            await service.DeleteMessageAsync(queue, mapper.Map(requestBody)).ConfigureAwait(false);
+        public async Task<IActionResult> DeleteMessageFromQueueAsync(string queue, [FromQuery] DeleteMessageRequest request) {
+            await service.DeleteMessageAsync(queue, mapper.Map(request)).ConfigureAwait(false);
             return Accepted();
         }
     }
