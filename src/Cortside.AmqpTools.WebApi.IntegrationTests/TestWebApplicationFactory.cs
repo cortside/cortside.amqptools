@@ -1,26 +1,26 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Cortside.AmqpTools.DomainService;
-using Cortside.AmqpTools.DomainService.Models;
-using Cortside.AmqpTools.DomainService.Models.Responses;
 using Cortside.AmqpTools.WebApi.IntegrationTests.Helpers.IDSMock;
 using Cortside.AmqpTools.WebApi.IntegrationTests.Helpers.WireMock;
+using AmqpTools.Core;
+using AmqpTools.Core.Commands.Peek;
+using AmqpTools.Core.Commands.Queue;
+using AmqpTools.Core.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.Azure.ServiceBus.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Newtonsoft.Json;
 using Serilog;
 using Serilog.Extensions.Hosting;
 
 namespace Cortside.AmqpTools.WebApi.IntegrationTests {
     public class TestWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class {
-        public Mock<IServiceBusClient> ServiceBusClientMock { get; set; }
+        public Mock<IAmqpToolsCore> AmqpToolsCoreMock { get; set; }
         private IdsMock idsMock;
         private readonly IConfiguration configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.integration.json", optional: false, reloadOnChange: false)
@@ -48,26 +48,29 @@ namespace Cortside.AmqpTools.WebApi.IntegrationTests {
             policyserverTokenClient["Authority"] = fluentMockServer.MockServer.Urls[0];
             policyServerConfig["PolicyServerUrl"] = fluentMockServer.MockServer.Urls[0];
 
-            ServiceBusClientMock = new Mock<IServiceBusClient>();
-            ServiceBusClientMock.Setup(c => c.GetQueueAsync(It.IsAny<string>())).Returns(Task.FromResult(new MessageCountDetailsResponse() {
-                ActiveMessageCount = 1,
-                DeadLetterMessageCount = 2,
-                ScheduledMessageCount = 3
-            }));
-            ServiceBusClientMock.Setup(c => c.PeekMessagesAsync(It.IsAny<MessageReceiver>(), It.IsAny<int>())).Returns(Task.FromResult(new List<AmqpToolsMessage>() {
+            AmqpToolsCoreMock = new Mock<IAmqpToolsCore>();
+            AmqpToolsCoreMock.Setup(c => c.GetQueueRuntimeInfo(It.IsAny<QueueOptions>())).Returns(new AmqpToolsQueueRuntimeInfo() {
+                MessageCountDetails = new AmqpToolsMessageCountDetails {
+                    ActiveMessageCount = 1,
+                    DeadLetterMessageCount = 2,
+                    ScheduledMessageCount = 3
+                }
+            });
+
+            AmqpToolsCoreMock.Setup(c => c.PeekMessages(It.IsAny<PeekOptions>())).Returns(new List<AmqpToolsMessage>() {
                 new AmqpToolsMessage() {
                     MessageId = Guid.NewGuid().ToString(),
                     CorrelationId = Guid.NewGuid().ToString(),
                     PartitionKey = "someQueue.someEvent",
-                    Body = new MessageBody() { Id = Guid.NewGuid().ToString(), InternalId = Guid.NewGuid().ToString() }
+                    Body = JsonConvert.SerializeObject( new MessageBody() { Id = Guid.NewGuid().ToString(), InternalId = Guid.NewGuid().ToString() })
                 },
                 new AmqpToolsMessage() {
                     MessageId = Guid.NewGuid().ToString(),
                     CorrelationId = Guid.NewGuid().ToString(),
                     PartitionKey = "someQueue.someEvent",
-                    Body = new MessageBody() { Id = Guid.NewGuid().ToString(), InternalId = Guid.NewGuid().ToString() }
+                    Body = JsonConvert.SerializeObject( new MessageBody() { Id = Guid.NewGuid().ToString(), InternalId = Guid.NewGuid().ToString() })
                 }
-            }));
+            });
 
             return Host.CreateDefaultBuilder()
                     .ConfigureAppConfiguration(builder => {
@@ -78,7 +81,7 @@ namespace Cortside.AmqpTools.WebApi.IntegrationTests {
                       .UseConfiguration(configuration)
                       .UseStartup<TStartup>()
                       .ConfigureTestServices(sc => {
-                          sc.AddSingleton(ServiceBusClientMock.Object);
+                          sc.AddSingleton(AmqpToolsCoreMock.Object);
                           sc.AddSingleton(services => new DiagnosticContext(Log.Logger));
                           sc.AddSingleton<IDiagnosticContext>(services => services.GetRequiredService<DiagnosticContext>());
                       })
