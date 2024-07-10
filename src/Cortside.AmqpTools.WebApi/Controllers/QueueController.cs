@@ -42,7 +42,7 @@ namespace Cortside.AmqpTools.WebApi.Controllers {
         /// <param name="queue"></param>
         /// <returns></returns>
         [HttpGet("{queue}")]
-        //[Authorize(Constants.Authorization.Permissions.GetQueues)]
+        [Authorize(Constants.Authorization.Permissions.GetQueues)]
         [ProducesResponseType(typeof(QueueRuntimeInfoResponse), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetQueueRuntimeInfoAsync(string queue) {
             logger.LogInformation("Getting runtime info for queue {Queue}", queue);
@@ -59,7 +59,7 @@ namespace Cortside.AmqpTools.WebApi.Controllers {
         /// <param name="peekRequestModel"></param>
         /// <returns></returns>
         [HttpGet("{queue}/peek")]
-        //[Authorize(Constants.Authorization.Permissions.GetQueues)]
+        [Authorize(Constants.Authorization.Permissions.GetQueues)]
         [ProducesResponseType(typeof(ListResult<MessageResponse>), 200)]
         public async Task<IActionResult> GetMessagesByQueueAsync(string queue, [FromQuery] PeekRequest peekRequestModel) {
             var result = await service.PeekMessagesAsync(queue, mapper.Map(peekRequestModel));
@@ -73,7 +73,7 @@ namespace Cortside.AmqpTools.WebApi.Controllers {
         /// <param name="requestModel"></param>
         /// <returns></returns>
         [HttpPost("{queue}/shovel")]
-        //[Authorize(Constants.Authorization.Permissions.ShovelQueues)]
+        [Authorize(Constants.Authorization.Permissions.ShovelQueues)]
         [ProducesResponseType(202)]
         public async Task<IActionResult> ShovelQueueAsync(string queue, [FromBody] ShovelRequest requestModel) {
             await service.ShovelMessagesAsync(queue, requestModel.MaxCount);
@@ -87,7 +87,7 @@ namespace Cortside.AmqpTools.WebApi.Controllers {
         /// <param name="requestBody"></param>
         /// <returns></returns>
         [HttpDelete("{queue}/message")]
-        //[Authorize(Constants.Authorization.Permissions.DeleteMessage)]
+        [Authorize(Constants.Authorization.Permissions.DeleteMessage)]
         [ProducesResponseType(202)]
         public async Task<IActionResult> DeleteMessageFromQueueAsync(string queue, [FromBody] DeleteMessageRequest requestBody) {
             await service.DeleteMessageAsync(queue, mapper.Map(requestBody)).ConfigureAwait(false);
