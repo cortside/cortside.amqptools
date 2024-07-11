@@ -83,12 +83,11 @@ namespace Cortside.AmqpTools.WebApi.IntegrationTests.Tests {
             testServerClient.DefaultRequestHeaders.Authorization = new Authentication().GetBearerToken();
 
             var request = new DeleteMessageRequest {
-                MessageId = Guid.NewGuid().ToString(),
                 MessageType = Dto.Enumerations.MessageType.DeadLetter
             };
 
             //act
-            var response = await testServerClient.DeleteAsync($"api/v1/queues/someQueue/message?messageId={request.MessageId}&messageType={request.MessageType}");
+            var response = await testServerClient.DeleteAsync($"api/v1/queues/someQueue/message/{Guid.NewGuid}?messageType={request.MessageType}");
 
             //assert
             response.StatusCode.Should().Be(HttpStatusCode.Accepted);

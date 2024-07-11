@@ -52,10 +52,10 @@ namespace Cortside.AmqpTools.WebApi.Mappers {
             };
         }
 
-        internal DeleteMessageRequestDto Map(DeleteMessageRequest requestBody) {
+        internal DeleteMessageRequestDto Map(string messageId, DeleteMessageRequest requestBody) {
             return new DeleteMessageRequestDto {
                 MessageType = requestBody.MessageType,
-                MessageId = requestBody.MessageId
+                MessageId = messageId
             };
         }
     }

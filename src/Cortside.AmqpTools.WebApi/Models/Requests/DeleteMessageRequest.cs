@@ -12,10 +12,5 @@ namespace Cortside.AmqpTools.WebApi.Models.Requests {
         [Required]
         public MessageType? MessageType { get; set; }
 
-        /// <summary>
-        /// Id of message to delete
-        /// </summary>
-        [Required, MinLength(1)]
-        public string MessageId { get; set; }
     }
 }
