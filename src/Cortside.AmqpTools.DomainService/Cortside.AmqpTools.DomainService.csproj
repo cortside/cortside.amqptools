@@ -12,7 +12,7 @@
     <Configurations>Production;Develop;QA;Staging;Debug</Configurations>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AmqpTools.Core" Version="1.0.102-morecommands" />
+    <PackageReference Include="AmqpTools.Core" Version="1.0.110-morecommands" />
     <PackageReference Include="Cortside.Common.DomainEvent" Version="1.0.195" />
     <PackageReference Include="Cortside.Common.Messages" Version="6.2.408" />
     <PackageReference Include="Cortside.Health" Version="6.0.86" />
