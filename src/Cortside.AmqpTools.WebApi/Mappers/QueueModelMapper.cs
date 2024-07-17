@@ -2,7 +2,6 @@
 using Cortside.AmqpTools.Dto.Dto;
 using Cortside.AmqpTools.WebApi.Models.Requests;
 using Cortside.AmqpTools.WebApi.Models.Responses;
-using Newtonsoft.Json;
 
 namespace Cortside.AmqpTools.WebApi.Mappers {
     /// <summary>
@@ -40,7 +39,7 @@ namespace Cortside.AmqpTools.WebApi.Mappers {
 
         internal MessageResponse Map(AmqpToolsMessage message) {
             return new MessageResponse {
-                Body = JsonConvert.DeserializeObject(message.Body.ToString()),
+                Body = message.Body,
                 MessageId = message.MessageId,
                 CorrelationId = message.CorrelationId,
                 PartitionKey = message.PartitionKey,
