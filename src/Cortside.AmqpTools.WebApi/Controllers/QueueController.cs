@@ -76,7 +76,7 @@ namespace Cortside.AmqpTools.WebApi.Controllers {
         [Authorize(Constants.Authorization.Permissions.ShovelQueues)]
         [ProducesResponseType(202)]
         public async Task<IActionResult> ShovelQueueAsync(string queue, [FromBody] ShovelRequest requestModel) {
-            await service.ShovelMessagesAsync(queue, requestModel.MaxCount);
+            await service.ShovelMessagesAsync(queue, mapper.Map(requestModel));
             return Accepted();
         }
 

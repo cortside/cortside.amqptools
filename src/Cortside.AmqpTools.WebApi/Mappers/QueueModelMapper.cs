@@ -2,6 +2,7 @@
 using Cortside.AmqpTools.Dto.Dto;
 using Cortside.AmqpTools.WebApi.Models.Requests;
 using Cortside.AmqpTools.WebApi.Models.Responses;
+using Cortside.Common.Messages.MessageExceptions;
 
 namespace Cortside.AmqpTools.WebApi.Mappers {
     /// <summary>
@@ -55,6 +56,13 @@ namespace Cortside.AmqpTools.WebApi.Mappers {
             return new DeleteMessageRequestDto {
                 MessageType = requestBody.MessageType,
                 MessageId = messageId
+            };
+        }
+
+        internal ShovelRequestDto Map(ShovelRequest requestModel) {
+            return new ShovelRequestDto {
+                MaxCount = requestModel.MaxCount ?? throw new BadRequestResponseException("The value of 'requestModel.MaxCount' should not be null"),
+                MessageId = requestModel.MessageId
             };
         }
     }

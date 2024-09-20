@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Cortside.AmqpTools.Dto.Dto;
 using AmqpTools.Core;
 using AmqpTools.Core.Commands;
 using AmqpTools.Core.Commands.DeleteMessage;
@@ -8,6 +7,7 @@ using AmqpTools.Core.Commands.Peek;
 using AmqpTools.Core.Commands.Queue;
 using AmqpTools.Core.Commands.Shovel;
 using AmqpTools.Core.Models;
+using Cortside.AmqpTools.Dto.Dto;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -72,11 +72,12 @@ namespace Cortside.AmqpTools.DomainService {
             return messages;
         }
 
-        public async Task ShovelMessagesAsync(string queue, int? maxCount) {
+        public async Task ShovelMessagesAsync(string queue, ShovelRequestDto dto) {
             var options = new ShovelOptions {
                 Queue = queue,
                 Namespace = baseOptions.Namespace,
-                Max = maxCount ?? 10,
+                Max = dto.MaxCount,
+                MessageId = dto.MessageId,
                 Key = baseOptions.Key,
                 Durable = baseOptions.Durable,
                 PolicyName = baseOptions.PolicyName,

@@ -10,5 +10,9 @@ namespace Cortside.AmqpTools.WebApi.Models.Requests {
         /// </summary>
         [Required, Range(1, int.MaxValue)]
         public int? MaxCount { get; set; }
+        /// <summary>
+        /// MessageId to shovel
+        /// </summary>
+        public string MessageId { get; set; }
     }
 }

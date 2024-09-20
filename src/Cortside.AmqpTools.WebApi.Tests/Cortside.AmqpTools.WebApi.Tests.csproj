@@ -16,23 +16,22 @@
     <None Remove="Cortside.AmqpTools.WebApi.Tests.v3.ncrunchproject" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Cortside.Common.Messages" Version="6.2.408" />
+    <PackageReference Include="Cortside.Common.Messages" Version="6.3.456" />
     <PackageReference Include="coverlet.collector" Version="6.0.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="FluentAssertions" Version="6.12.0" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="8.0.7" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.7" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.10.48">
+    <PackageReference Include="FluentAssertions" Version="6.12.1" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="8.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.8" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.11.20">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Moq" Version="4.20.70" />
+    <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="RestSharp" Version="110.2.0" />
-    <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />
     <PackageReference Include="Serilog.Sinks.TestCorrelator" Version="3.2.0" />
     <PackageReference Include="TeamCity.VSTest.TestAdapter" Version="1.0.40" />
     <PackageReference Include="xunit" Version="2.9.0" />
@@ -49,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Events\" />
+    <Folder Include="Filters\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cortside.AmqpTools.Exceptions\Cortside.AmqpTools.Exceptions.csproj" />
