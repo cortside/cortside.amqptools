@@ -1,17 +1,17 @@
+using Asp.Versioning.ApiExplorer;
+using Cortside.AmqpTools.BootStrap;
+using Cortside.AmqpTools.WebApi.Installers;
 using Cortside.AspNetCore;
 using Cortside.AspNetCore.AccessControl;
 using Cortside.AspNetCore.ApplicationInsights;
 using Cortside.AspNetCore.Builder;
 using Cortside.AspNetCore.Common;
+using Cortside.AspNetCore.Filters;
 using Cortside.AspNetCore.Swagger;
-using Cortside.Common.Messages.Filters;
 using Cortside.Health;
-using Cortside.AmqpTools.BootStrap;
-using Cortside.AmqpTools.WebApi.Installers;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -84,6 +84,7 @@ namespace Cortside.AmqpTools.WebApi {
             // setup and register boostrapper and it's installers
             services.AddBootStrapper<DefaultApplicationBootStrapper>(Configuration, o => {
                 o.AddInstaller(new StartupInstaller());
+                o.AddInstaller(new ModelMapperInstaller());
             });
         }
 

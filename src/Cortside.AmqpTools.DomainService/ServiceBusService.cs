@@ -1,109 +1,117 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Cortside.AmqpTools.Configuration;
-using Cortside.AmqpTools.DomainService.Models;
-using Cortside.AmqpTools.DomainService.Models.Responses;
-using Cortside.AmqpTools.Dto.Enumerations;
-using Cortside.AmqpTools.Exceptions;
-using Microsoft.Azure.ServiceBus;
-using Microsoft.Azure.ServiceBus.Core;
+using AmqpTools.Core;
+using AmqpTools.Core.Commands;
+using AmqpTools.Core.Commands.DeleteMessage;
+using AmqpTools.Core.Commands.Peek;
+using AmqpTools.Core.Commands.Queue;
+using AmqpTools.Core.Commands.Shovel;
+using AmqpTools.Core.Models;
+using Cortside.AmqpTools.Dto.Dto;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace Cortside.AmqpTools.DomainService {
     public class ServiceBusService : IServiceBusService {
         private readonly ILogger<ServiceBusService> logger;
-        private readonly AmqpToolsConfiguration config;
-        private readonly IServiceBusClient client;
+        private readonly IAmqpToolsCore toolsCore;
+        private readonly BaseOptions baseOptions;
 
         public ServiceBusService(
             ILogger<ServiceBusService> logger,
-            AmqpToolsConfiguration config,
-            IServiceBusClient client) {
+            IAmqpToolsCore amqpToolsCore,
+             BaseOptions amqpToolsBaseOptions
+            ) {
             this.logger = logger;
-            this.config = config;
-            this.client = client;
+            toolsCore = amqpToolsCore;
+            baseOptions = amqpToolsBaseOptions;
         }
 
-        public async Task<MessageCountDetailsResponse> GetMessageDetailsByQueueAsync(string queue) {
-            MessageCountDetailsResponse messageCount = await client.GetQueueAsync(queue);
-            logger.LogInformation("MessageCountDetails for {Queue}: {Count}", queue, JsonConvert.SerializeObject(messageCount));
+        public async Task<AmqpToolsQueueRuntimeInfo> GetMessageDetailsByQueueAsync(string queue) {
+            var options = new QueueOptions {
+                Queue = queue,
+                Namespace = baseOptions.Namespace,
+                Key = baseOptions.Key,
+                Durable = baseOptions.Durable,
+                PolicyName = baseOptions.PolicyName,
+                Protocol = baseOptions.Protocol,
+                InitialCredit = baseOptions.InitialCredit,
+                Timeout = baseOptions.Timeout,
+            };
 
-            return messageCount;
+            var result = toolsCore.GetQueueRuntimeInfo(options);
+
+            logger.LogInformation("Queue runtime info for {Queue}: {Result}", queue, JsonConvert.SerializeObject(result));
+            await Task.CompletedTask;
+
+            return result;
         }
 
-        public async Task<QueueCount> GetMessageDetailsByQueueAsync(string queue, string messageType) {
-            var messageCount = await GetMessageDetailsByQueueAsync(queue);
-            logger.LogInformation("MessageCountDetails for {Queue}: {Count}", queue, JsonConvert.SerializeObject(messageCount));
 
-            try {
-                Enum.TryParse(typeof(MessageType), messageType, true, out object type);
-                switch (type) {
-                    case MessageType.Active:
-                        return new QueueCount() { Count = messageCount.ActiveMessageCount };
-                    case MessageType.DeadLetter:
-                        return new QueueCount() { Count = messageCount.DeadLetterMessageCount };
-                    case MessageType.Scheduled:
-                        return new QueueCount() { Count = messageCount.ScheduledMessageCount };
-                    default:
-                        logger.LogError("Unexpected message type: {MessageType}", messageType);
-                        throw new InvalidArgumentMessage($"Unrecognized message type {messageType}.");
-                }
-            } catch (Exception ex) {
-                logger.LogError(ex, "Unable to parse message type: {MessageType}.", messageType);
-                throw new InvalidArgumentMessage($"Unrecognized message type {messageType}.");
-            }
-        }
 
-        public async Task<IList<AmqpToolsMessage>> PeekMessagesAsync(string queue, string messageType, int count) {
-            string formattedQueue = FormatQueue(queue, messageType);
-            logger.LogInformation("Peeking {Count} messages from {FormattedQueue}.", count, formattedQueue);
+        public async Task<IList<AmqpToolsMessage>> PeekMessagesAsync(string queue, PeekRequestDto dto) {
 
-            var receiver = new MessageReceiver(config.ConnectionString, formattedQueue, ReceiveMode.PeekLock);
+            var options = new PeekOptions {
+                Queue = queue,
+                MessageType = dto.MessageType.ToString(),
+                Count = dto.Count ?? 10,
+                Namespace = baseOptions.Namespace,
+                Key = baseOptions.Key,
+                Durable = baseOptions.Durable,
+                PolicyName = baseOptions.PolicyName,
+                Protocol = baseOptions.Protocol,
+                InitialCredit = baseOptions.InitialCredit,
+                Timeout = baseOptions.Timeout,
+            };
 
-            // Browse messages from queue
-            var messages = await client.PeekMessagesAsync(receiver, count);
-            await receiver.CloseAsync();
+            logger.LogInformation("Connecting to {Queue} to peek {Count} messages of type {MessageType}", queue, options.Count, options.MessageType);
+            var messages = toolsCore.PeekMessages(options);
+            await Task.CompletedTask;
+            logger.LogInformation("PeekMessages complete");
+
             return messages;
         }
 
-        public async Task ShovelMessagesAsync(string queue) {
-            var dlq = EntityNameHelper.FormatDeadLetterPath(queue);
-            var max = config.Max;
-            logger.LogInformation("Connecting to {Queue} to shovel maximum of {Max} messages", queue, max);
+        public async Task ShovelMessagesAsync(string queue, ShovelRequestDto dto) {
+            var options = new ShovelOptions {
+                Queue = queue,
+                Namespace = baseOptions.Namespace,
+                Max = dto.MaxCount,
+                MessageId = dto.MessageId,
+                Key = baseOptions.Key,
+                Durable = baseOptions.Durable,
+                PolicyName = baseOptions.PolicyName,
+                Protocol = baseOptions.Protocol,
+                InitialCredit = baseOptions.InitialCredit,
+                Timeout = baseOptions.Timeout,
+            };
 
-            if (config.ConnectionString != null) {
-                var messages = await GetMessageDetailsByQueueAsync(queue, MessageType.DeadLetter.ToString());
-                logger.LogInformation("Message queue {Dlq} has {Count} messages", dlq, messages.Count);
-
-                if (messages.Count < config.Max) {
-                    max = Convert.ToInt32(messages.Count);
-                    logger.LogInformation("Resetting max messages to {Max}", max);
-                }
-            }
-
-            client.Shovel(max, queue, dlq);
+            logger.LogInformation("Connecting to {Queue} to shovel maximum of {Max} messages", queue, options.Max);
+            toolsCore.ShovelMessages(options);
+            await Task.CompletedTask;
             logger.LogInformation("ShovelMessages complete");
         }
 
-        public Task DeleteMessageAsync(string queue, string type, string messageId) {
-            string formattedQueue = FormatQueue(queue, type);
-            logger.LogInformation("Connecting to {FormattedQueue} to delete message {MessageId}", formattedQueue, messageId);
-            return client.DeleteMessageAsync(queue, formattedQueue, messageId);
+        public Task DeleteMessageAsync(string queue, DeleteMessageRequestDto dto) {
+            var options = new DeleteMessageOptions {
+                Queue = queue,
+                MessageId = dto.MessageId,
+                MessageType = dto.MessageType.ToString(),
+                Namespace = baseOptions.Namespace,
+                Key = baseOptions.Key,
+                Durable = baseOptions.Durable,
+                PolicyName = baseOptions.PolicyName,
+                Protocol = baseOptions.Protocol,
+                InitialCredit = baseOptions.InitialCredit,
+                Timeout = baseOptions.Timeout,
+            };
+
+
+            logger.LogInformation("Connecting to {Queue} to delete message {MessageId} for type {MessageType}", options.Queue, dto.MessageId, dto.MessageType);
+            toolsCore.DeleteMessage(options);
+            return Task.CompletedTask;
         }
 
-        private string FormatQueue(string queue, string messageType) {
-            Enum.TryParse(typeof(MessageType), messageType, true, out object type);
-            switch (type) {
-                case MessageType.Active:
-                    return queue;
-                case MessageType.DeadLetter:
-                    return EntityNameHelper.FormatDeadLetterPath(queue);
-                default:
-                    // Not supported
-                    throw new InvalidArgumentMessage($"Peeking queues by type {messageType} is not supported");
-            }
-        }
+
     }
 }

@@ -12,11 +12,12 @@
     <Configurations>Production;Develop;QA;Staging;Debug</Configurations>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="AmqpTools.Core" Version="1.0.136-develop" />
     <PackageReference Include="Cortside.Common.DomainEvent" Version="1.0.195" />
-    <PackageReference Include="Cortside.Common.Messages" Version="6.2.408" />
-    <PackageReference Include="Cortside.Health" Version="6.0.86" />
+    <PackageReference Include="Cortside.Common.Messages" Version="6.3.456" />
+    <PackageReference Include="Cortside.Health" Version="6.1.93" />
     <PackageReference Include="Microsoft.Azure.ServiceBus" Version="5.2.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.10.48">
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.11.20">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

@@ -1,7 +1,9 @@
-﻿using Cortside.AspNetCore.AccessControl;
-using Cortside.Common.BootStrap;
-using Cortside.AmqpTools.Configuration;
+﻿using Cortside.AmqpTools.Configuration;
 using Cortside.AmqpTools.DomainService;
+using AmqpTools.Core;
+using AmqpTools.Core.Commands;
+using Cortside.AspNetCore.AccessControl;
+using Cortside.Common.BootStrap;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -33,7 +35,12 @@ namespace Cortside.AmqpTools.WebApi.Installers {
             AmqpToolsConfiguration serviceConfiguration = configuration.GetSection("Options").Get<AmqpToolsConfiguration>();
             services.AddSingleton(serviceConfiguration);
 
+            BaseOptions amqpToolsBaseOptions = configuration.GetSection("Options").Get<BaseOptions>();
+            services.AddSingleton(amqpToolsBaseOptions);
+
+
             services.AddSingleton<ISubjectService, SubjectService>();
+            services.AddSingleton<IAmqpToolsCore, AmqpToolsCore>();
         }
     }
 }
