@@ -1,0 +1,39 @@
+{
+  "version": "1.0",
+  "service": "amqptools-api",
+  "repository": {
+    "name": "Cortside.AmqpTools"
+  },
+  "database": {
+    "name": "NONE",
+    "dbContext": "DatabaseContext",
+    "dbContextProject": "src/Cortside.AmqpTools.Data",
+    "startupProject": "src/Cortside.AmqpTools.WebApi",
+    "triggers": {
+      "excludeTables": [
+        "__EFMigrationsHistory",
+        "AuditLog",
+        "AuditLogTransaction",
+        "Outbox"
+      ]
+    }
+  },
+  "docker": {
+    "buildImage": "cortside/dotnet-sdk:8.0-alpine",
+    "runtimeImage": "cortside/dotnet-runtime:8.0-alpine",
+    "image": "cortside/amqptools-api",
+    "executable": "Cortside.AmqpTools.WebApi"
+  },
+  "build": {
+    "configuration": "Debug",
+    "nugetfeed": "https://api.nuget.org/v3/index.json",
+    "publishableProject": "Cortside.AmqpTools.WebApi"
+  },
+  "sonar": {
+    "organization": "cortside",
+    "key": "cortside_cortside.amqptools",
+    "host": "https://sonarcloud.io",
+    "token": "",
+    "propertyPrefix": "/d:"
+  }
+}
