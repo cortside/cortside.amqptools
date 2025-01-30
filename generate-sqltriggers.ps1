@@ -50,7 +50,7 @@ Write-Output @("
 ")
 
 if ($PSScriptRoot.Contains(' ')) { 
-	throw "Your working directory has a space in the path, which is not supported.  Wise up and move to C:\work\Cortside.AmqpTools! And have a wonderful work day!"
+	throw "Your working directory has a space in the path, which is not supported.  Wise up and move to C:\work\Acme.ShoppingCart! And have a wonderful work day!"
 	exit
 }
 
