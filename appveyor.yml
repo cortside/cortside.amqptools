@@ -50,7 +50,6 @@ build_script:
     $pushImage = (-Not (Test-Path env:APPVEYOR_PULL_REQUEST_NUMBER));
     .\build-dockerimages.ps1 -branch $branch -buildCounter $buildNumber -pushImage:$pushImage;
     $fileVersion = $env:APPVEYOR_BUILD_VERSION;
-    dotnet build src/Cortside.Authorization.Client --configuration $env:CONFIGURATION /property:"Version=$fileVersion";
 
 cache:
 - '%USERPROFILE%\.nuget\packages'
