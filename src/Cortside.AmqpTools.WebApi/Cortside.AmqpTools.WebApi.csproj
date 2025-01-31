@@ -10,10 +10,11 @@
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="Cortside.AspNetCore" Version="6.3.294" />
-    <PackageReference Include="Cortside.AspNetCore.AccessControl" Version="6.3.294" />
+    <PackageReference Include="Cortside.AspNetCore.AccessControl" Version="6.4.308-develop" />
     <PackageReference Include="Cortside.AspNetCore.ApplicationInsights" Version="6.3.294" />
     <PackageReference Include="Cortside.AspNetCore.Common" Version="6.3.294" />
     <PackageReference Include="Cortside.AspNetCore.Swagger" Version="6.3.294" />
+    <PackageReference Include="Cortside.Authorization.Client" Version="1.0.34-develop" />
     <PackageReference Include="Cortside.Bowdlerizer" Version="6.0.59" />
     <PackageReference Include="Cortside.Common.Correlation" Version="6.3.458" />
     <PackageReference Include="Cortside.Common.Hosting" Version="6.3.458" />
@@ -35,7 +36,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="PolicyServer.Runtime.Client.AspNetCore" Version="4.3.0" />
+    <!--<PackageReference Include="PolicyServer.Runtime.Client.AspNetCore" Version="4.3.0" />-->
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
     <PackageReference Include="Serilog.Bowdlerizer" Version="6.1.81" />
     <PackageReference Include="Serilog.Enrichers.AspNetCore" Version="1.0.0" />

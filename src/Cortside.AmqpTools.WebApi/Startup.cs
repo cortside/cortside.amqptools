@@ -8,6 +8,7 @@ using Cortside.AspNetCore.Builder;
 using Cortside.AspNetCore.Common;
 using Cortside.AspNetCore.Filters;
 using Cortside.AspNetCore.Swagger;
+using Cortside.Authorization.Client.AspNetCore;
 using Cortside.Health;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -72,8 +73,12 @@ namespace Cortside.AmqpTools.WebApi {
                 options.Filters.Add<MessageExceptionResponseFilter>();
             });
 
-            // Add the access control using IdentityServer and PolicyServer
+            // Add the access control using IdentityServer and an AuthorizationProvider: PolicyServer or AuthorizationApi
             services.AddAccessControl(Configuration);
+            var accessControlConfiguration = Configuration.GetSection("AccessControl").Get<AccessControlConfiguration>();
+            if (accessControlConfiguration.AuthorizationProvider == AccessControlProviders.AuthorizationApi) {
+                services.AddAuthorizationApiClient(Configuration);
+            }
 
             // Add swagger with versioning and OpenID Connect configuration using Newtonsoft
             services.AddSwagger(Configuration, "AmqpTools API", "AmqpTools API", ["v1"]);

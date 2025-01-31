@@ -87,7 +87,7 @@ namespace Cortside.AmqpTools.WebApi.IntegrationTests.Tests {
             };
 
             //act
-            var response = await testServerClient.DeleteAsync($"api/v1/queues/someQueue/message/{Guid.NewGuid}?messageType={request.MessageType}");
+            var response = await testServerClient.DeleteAsync($"api/v1/queues/someQueue/messages/{Guid.NewGuid}?messageType={request.MessageType}");
 
             //assert
             response.StatusCode.Should().Be(HttpStatusCode.Accepted);

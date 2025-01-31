@@ -11,7 +11,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Cortside.AspNetCore" Version="6.3.294" />
-    <PackageReference Include="Cortside.AspNetCore.AccessControl" Version="6.3.294" />
+    <PackageReference Include="Cortside.AspNetCore.AccessControl" Version="6.4.308-develop" />
     <PackageReference Include="Cortside.AspNetCore.Common" Version="6.3.294" />
     <PackageReference Include="Cortside.Common.BootStrap" Version="6.3.458" />
     <PackageReference Include="Cortside.Common.DomainEvent" Version="1.0.195" />

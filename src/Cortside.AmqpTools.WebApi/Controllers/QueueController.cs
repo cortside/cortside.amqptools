@@ -42,7 +42,7 @@ namespace Cortside.AmqpTools.WebApi.Controllers {
         /// <param name="queue"></param>
         /// <returns></returns>
         [HttpGet("{queue}")]
-        [Authorize(Constants.Authorization.Permissions.GetQueues)]
+        [Authorize(Constants.Authorization.Permissions.GetQueueRuntimeInfo)]
         [ProducesResponseType(typeof(QueueRuntimeInfoResponse), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetQueueRuntimeInfoAsync(string queue) {
             logger.LogInformation("Getting runtime info for queue {Queue}", queue);
@@ -59,7 +59,7 @@ namespace Cortside.AmqpTools.WebApi.Controllers {
         /// <param name="peekRequestModel"></param>
         /// <returns></returns>
         [HttpGet("{queue}/peek")]
-        [Authorize(Constants.Authorization.Permissions.GetQueues)]
+        [Authorize(Constants.Authorization.Permissions.GetMessagesByQueue)]
         [ProducesResponseType(typeof(ListResult<MessageResponse>), 200)]
         public async Task<IActionResult> GetMessagesByQueueAsync(string queue, [FromQuery] PeekRequest peekRequestModel) {
             var result = await service.PeekMessagesAsync(queue, mapper.Map(peekRequestModel));
@@ -87,7 +87,7 @@ namespace Cortside.AmqpTools.WebApi.Controllers {
         /// <param name="messageId"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpDelete("{queue}/message/{messageId}")]
+        [HttpDelete("{queue}/messages/{messageId}")]
         [Authorize(Constants.Authorization.Permissions.DeleteMessage)]
         [ProducesResponseType(202)]
         public async Task<IActionResult> DeleteMessageFromQueueAsync(string queue, string messageId, [FromQuery] DeleteMessageRequest request) {
