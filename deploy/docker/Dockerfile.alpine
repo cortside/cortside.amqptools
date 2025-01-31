@@ -28,21 +28,20 @@ ARG publishableProject
 #ENV TEAMCITY_VERSION="1.1" 
 
 RUN export SONAR_SCANNER_OPTS="-Xmx4096m" && \
-    # echo "analysisArgs=$analysisArgs" && \
-    # dotnet sonarscanner begin \
-    # /k:"$(echo $sonarkey | tr '[:upper:]' '[:lower:]')" \
-    # /o:"$organization" \
-    # /d:sonar.host.url="$sonarhost" \
-    # /d:sonar.login="$sonartoken" \
-    # /v:"$imageversion" \
-    # /d:sonar.cs.opencover.reportsPaths="**/*.opencover.xml" \
-    # /d:sonar.coverage.exclusions="**/*Test*.cs,**/Migrations/*" \
-    # /d:sonar.exclusions="**/*Test*.cs,**/Migrations/*,**/*Api.xml" \
-    # $analysisArgs && \
+    echo "analysisArgs=$analysisArgs" && \
+    dotnet sonarscanner begin \
+    /k:"$(echo $sonarkey | tr '[:upper:]' '[:lower:]')" \
+    /o:"$organization" \
+    /d:sonar.host.url="$sonarhost" \
+    /d:sonar.login="$sonartoken" \
+    /v:"$imageversion" \
+    /d:sonar.cs.opencover.reportsPaths="**/*.opencover.xml" \
+    /d:sonar.coverage.exclusions="**/*Test*.cs,**/Migrations/*" \
+    /d:sonar.exclusions="**/*Test*.cs,**/Migrations/*,**/*Api.xml" \
+    $analysisArgs && \
     dotnet build --no-restore && \
     dotnet test --no-build --no-restore /p:Exclude="[xunit*]*" /p:ParallelizeTestCollections=false --collect:"XPlat Code Coverage" --settings coverlet.runsettings.xml && \
-    #--logger:"teamcity;verbosity=normal" && \
-    # dotnet sonarscanner end /d:sonar.login="$sonartoken" && \
+    dotnet sonarscanner end /d:sonar.login="$sonartoken" && \
     dotnet publish "$publishableProject" -p:Version=$(echo $imageversion | cut -f 1 -d '-') -o out -r linux-musl-x64
 
 ## Build the runtime environment
