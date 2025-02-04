@@ -25,7 +25,7 @@ namespace Cortside.AmqpTools.WebApi.IntegrationTests.Tests {
         [Fact]
         public async Task ShouldGetQueueDetailsAsync() {
             //get Token
-            testServerClient.DefaultRequestHeaders.Authorization = new Authentication().GetBearerToken();
+            testServerClient.DefaultRequestHeaders.Authorization = Authentication.GetBearerToken();
 
             //act
             var response = await testServerClient.GetAsync("api/v1/queues/someQueue");
@@ -43,7 +43,7 @@ namespace Cortside.AmqpTools.WebApi.IntegrationTests.Tests {
         [Fact]
         public async Task ShouldPeekMessagesAsync() {
             //get Token
-            testServerClient.DefaultRequestHeaders.Authorization = new Authentication().GetBearerToken();
+            testServerClient.DefaultRequestHeaders.Authorization = Authentication.GetBearerToken();
 
             //act
             var response = await testServerClient.GetAsync("api/v1/queues/someQueue/peek?count=10&messageType=deadletter");
@@ -64,7 +64,7 @@ namespace Cortside.AmqpTools.WebApi.IntegrationTests.Tests {
         [Fact]
         public async Task ShouldShovelMessagesAsync() {
             //get Token
-            testServerClient.DefaultRequestHeaders.Authorization = new Authentication().GetBearerToken();
+            testServerClient.DefaultRequestHeaders.Authorization = Authentication.GetBearerToken();
 
             var body = new ShovelRequest {
                 MaxCount = 5
@@ -80,7 +80,7 @@ namespace Cortside.AmqpTools.WebApi.IntegrationTests.Tests {
         [Fact]
         public async Task ShouldDeleteMessageAsync() {
             //get Token
-            testServerClient.DefaultRequestHeaders.Authorization = new Authentication().GetBearerToken();
+            testServerClient.DefaultRequestHeaders.Authorization = Authentication.GetBearerToken();
 
             var request = new DeleteMessageRequest {
                 MessageType = Dto.Enumerations.MessageType.DeadLetter
