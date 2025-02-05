@@ -41,7 +41,6 @@ RUN export SONAR_SCANNER_OPTS="-Xmx4096m" && \
     $analysisArgs && \
     dotnet build --no-restore && \
     dotnet test --no-build --no-restore /p:Exclude="[xunit*]*" /p:ParallelizeTestCollections=false --collect:"XPlat Code Coverage" --settings coverlet.runsettings.xml && \
-	#--logger:"teamcity;verbosity=normal" && \
     dotnet sonarscanner end /d:sonar.login="$sonartoken" && \
     dotnet publish "$publishableProject" -p:Version=$(echo $imageversion | cut -f 1 -d '-') -o out -r linux-musl-x64
 
@@ -52,7 +51,7 @@ ARG publishableProject
 ARG service_executable
 ARG service_name
 
-ENV configpath /app/appsettings.json
+ENV configpath=/app/appsettings.json
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 ENV ASPNETCORE_URLS=http://+:5000
 ENV ASPNETCORE_ENVIRONMENT=Deployment
@@ -68,8 +67,8 @@ RUN chmod -R a+rw /sql
 WORKDIR /app
 COPY --from=build /app/src/out ./
 COPY --from=build /app/src/"$publishableProject"/build.json ./
-RUN chown user:user appsettings.json
+RUN chown appuser:appuser  appsettings.json
 
-USER user
+USER appuser 
 EXPOSE 5000/tcp
 CMD ["/startup.sh"]

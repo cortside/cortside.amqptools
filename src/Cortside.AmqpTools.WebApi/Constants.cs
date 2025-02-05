@@ -12,9 +12,13 @@ namespace Cortside.AmqpTools.WebApi {
             /// </summary>
             public static class Permissions {
                 /// <summary>
-                /// Get queues permission
+                /// Get queue runtime info permission
                 /// </summary>
-                public const string GetQueues = "GetQueues";
+                public const string GetQueueRuntimeInfo = nameof(GetQueueRuntimeInfo);
+                /// <summary>
+                /// Get messages by queue permission
+                /// </summary>
+                public const string GetMessagesByQueue = nameof(GetMessagesByQueue);
 
                 /// <summary>
                 /// Shovel queues permission

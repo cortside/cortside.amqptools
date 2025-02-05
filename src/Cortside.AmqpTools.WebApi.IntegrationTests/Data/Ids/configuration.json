@@ -17,24 +17,10 @@
     "openid",
     "profile",
     "role",
-    "eboa.webapi",
-    "multidisbursement.api",
-    "fundingmanagement.api",
-    "identity",
-    "common.communications",
-    "multidisbursement.backendapp",
-    "loan-api",
-    "document-api",
-    "partnerportal",
-    "user-api",
-    "termscalculator-api",
-    "datawarehouse-api",
     "policyserver.runtime",
     "policyserver.management",
     "policyserver.externalsearch",
-    "calendar.api",
-    "maintenance.api",
-    "appreview-api",
+    "authorization-api",
     "idsadmin-ui",
     "offline_access"
   ],
@@ -73,12 +59,12 @@
     "code token",
     "code id_token token"
   ],
-  "response_modes_supported": ["form_post", "query", "fragment"],
+  "response_modes_supported": [ "form_post", "query", "fragment" ],
   "token_endpoint_auth_methods_supported": [
     "client_secret_basic",
     "client_secret_post"
   ],
-  "subject_types_supported": ["public"],
-  "id_token_signing_alg_values_supported": ["RS256"],
-  "code_challenge_methods_supported": ["plain", "S256"]
+  "subject_types_supported": [ "public" ],
+  "id_token_signing_alg_values_supported": [ "RS256" ],
+  "code_challenge_methods_supported": [ "plain", "S256" ]
 }

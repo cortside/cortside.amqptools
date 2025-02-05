@@ -1,4 +1,4 @@
-﻿Param (
+Param (
 )
 
 $ErrorActionPreference = "Stop"
@@ -26,6 +26,15 @@ function Update-Myself {
 		}
     }
     write-host "No update required"
+}
+
+# Remove a file or folder quietly
+# Like linux "rm -rf"
+function Remove-IfItemExists($item) {
+  if (Test-Path $item) {
+    echo "Removing $item"
+    Remove-Item $item  -r -force
+  }
 }
 
 $configfile = "repository.json"
@@ -62,22 +71,26 @@ if ($service -eq "" -or $repository -eq "") {
 }
 
 $hasDatabase = $false
-if ($database -ne "") {
+if ($database -ne "" -and $database -ne $null) {
 	$hasDatabase = $true
 }	
-		
+
 echo "service: $service"
 echo "repository: $repository"
 echo "database: $database"
 echo "hasDatabase: $hasDatabase"
-		
+
+cp .\temp\coeus\shoppingcart-api\update-fromtemplate.ps1
 cp .\temp\coeus\shoppingcart-api\clean.ps1
 cp .\temp\coeus\shoppingcart-api\format.ps1
 cp .\temp\coeus\shoppingcart-api\create-release.ps1
 cp .\temp\coeus\shoppingcart-api\generate-changelog.ps1
 cp .\temp\coeus\shoppingcart-api\update-nugetpackages.ps1
 cp .\temp\coeus\shoppingcart-api\src\.editorconfig .\src\.editorconfig
+cp .\temp\coeus\shoppingcart-api\src\coverlet.runsettings.xml .\src\coverlet.runsettings.xml
 cp .\temp\coeus\shoppingcart-api\.gitignore
+
+Remove-IfItemExists update-template.ps1
 
 #cp .\temp\coeus\shoppingcart-api\.gitattributes
 #git commit -m "Saving files before refreshing line endings" .gitattributes
@@ -87,7 +100,7 @@ cp .\temp\coeus\shoppingcart-api\build.ps1
 cp .\temp\coeus\shoppingcart-api\dependabot.ps1
 cp .\temp\coeus\shoppingcart-api\update-targetframework.ps1
 
-#((Get-Content -path build.ps1 -Raw) -replace 'Cortside.ShoppingCart',$repository) | Set-Content -NoNewline -Path build.ps1 -Encoding utf8
+#((Get-Content -path build.ps1 -Raw) -replace 'Acme.ShoppingCart',$repository) | Set-Content -NoNewline -Path build.ps1 -Encoding utf8
 
 if ($hasDatabase) {
 	cp .\temp\coeus\shoppingcart-api\add-migration.ps1
@@ -98,7 +111,7 @@ if ($hasDatabase) {
 	cp .\temp\coeus\shoppingcart-api\repository.psm1
 	cp .\temp\coeus\shoppingcart-api\update-database.ps1
 
-#	((Get-Content -path generate-sqltriggers.ps1 -Raw) -replace 'Cortside.ShoppingCart',$repository) | Set-Content -NoNewline -Path generate-sqltriggers.ps1 -Encoding utf8
+#	((Get-Content -path generate-sqltriggers.ps1 -Raw) -replace 'Acme.ShoppingCart',$repository) | Set-Content -NoNewline -Path generate-sqltriggers.ps1 -Encoding utf8
 
 	if (Test-Path -path "src/sql/TriggerScripts") {
 		rm src/sql/TriggerScripts/GenerateTriggers.sql

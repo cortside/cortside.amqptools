@@ -25,7 +25,6 @@ namespace Cortside.AmqpTools.DomainService.Tests {
         }
 
         public void Dispose() {
-            TestFixture.TearDown();
             Dispose(true);
             GC.SuppressFinalize(this);
         }

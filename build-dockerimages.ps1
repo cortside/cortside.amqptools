@@ -84,7 +84,7 @@ Function New-BuildJson {
 	$builditems.timestamp = $buildTime
 	$builditems.Keys | % { $build | Add-Member -MemberType NoteProperty -Name $_ -Value $builditems.$_ } > $null
 	
-	$buildobject | Add-Member -MemberType NoteProperty -Name build -Value $build
+	$buildobject | Add-Member -MemberType NoteProperty -Name Build -Value $build
 	$buildobject | ConvertTo-Json -Depth 5 | Out-File $buildjsonpath -force
 
 	return $buildobject
@@ -110,6 +110,7 @@ Write-Output "nugetfeed: $($config.nuget.feed)"
 Write-Output "buildimage=$($config.docker.buildimage)"
 Write-Output "runtimeimage=$($config.docker.runtimeimage)"
 Write-Output "image:$($config.docker.image)"
+Write-Output "pushImage: $($pushImage.IsPresent)" 
 
 #Run Build for all Dockerfiles in /Docker path
 $dockerFiles = Get-ChildItem -Path $dockercontext -Filter $dockerpath -Recurse
