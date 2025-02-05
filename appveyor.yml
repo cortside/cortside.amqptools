@@ -44,6 +44,7 @@ build_script:
 - ps: >-
     $buildNumber = $env:APPVEYOR_BUILD_NUMBER;
     $branch = $env:APPVEYOR_REPO_BRANCH;
+    
     if (Test-Path env:APPVEYOR_PULL_REQUEST_NUMBER) {
       $branch = $Env:APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH;
       $target = $Env:APPVEYOR_REPO_BRANCH;
@@ -51,7 +52,13 @@ build_script:
       .\build-dockerimages.ps1 -branch $branch -buildCounter $buildNumber -pushImage:$false -pullRequestId $env:APPVEYOR_PULL_REQUEST_NUMBER -target $target -commit $commit;
 
     } else {
-      .\build-dockerimages.ps1 -branch $branch -buildCounter $buildNumber -pushImage:$true;
+      if ($branch -ne "master") {
+        $target = "develop";
+        if ($branch -eq "develop" -or $branch -like "release/*" -or $branch -like "hotfix/*") {
+            $target = "master";
+        }
+      }
+      .\build-dockerimages.ps1 -branch $branch -target $target -buildCounter $buildNumber -pushImage:$true;
     }
     $fileVersion = $env:APPVEYOR_BUILD_VERSION;
 
